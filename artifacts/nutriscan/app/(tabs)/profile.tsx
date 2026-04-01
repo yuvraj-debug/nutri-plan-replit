@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
-  Platform, Switch, Alert
+  Platform, Switch, Alert, Image, ActivityIndicator
 } from "react-native";
 import { router } from "expo-router";
 import { Feather } from "@expo/vector-icons";
 import { useColors } from "@/hooks/useColors";
 import { useApp } from "@/context/AppContext";
+import { useAuth } from "@/lib/auth";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { HealthProfile, DietType, HealthCondition, Allergen, Preference } from "@/types";
 
@@ -50,6 +51,7 @@ export default function ProfileScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const botPad = Platform.OS === "web" ? 34 : insets.bottom;
 
+  const { user, isLoading: authLoading, isAuthenticated, login, logout } = useAuth();
   const [profile, setProfile] = useState<HealthProfile>(healthProfile);
   const [hasChanges, setHasChanges] = useState(false);
 
@@ -111,6 +113,60 @@ export default function ProfileScreen() {
       <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>
         Your profile personalizes warnings and scores for every product scan.
       </Text>
+
+      {/* Account Section */}
+      <View style={[styles.accountCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        {authLoading ? (
+          <ActivityIndicator color={colors.primary} />
+        ) : isAuthenticated && user ? (
+          <View style={styles.accountInner}>
+            {user.profileImageUrl ? (
+              <Image source={{ uri: user.profileImageUrl }} style={styles.avatar} />
+            ) : (
+              <View style={[styles.avatarPlaceholder, { backgroundColor: colors.secondary }]}>
+                <Feather name="user" size={24} color={colors.primary} />
+              </View>
+            )}
+            <View style={styles.accountInfo}>
+              <Text style={[styles.accountName, { color: colors.foreground }]}>
+                {[user.firstName, user.lastName].filter(Boolean).join(" ") || "User"}
+              </Text>
+              {user.email && (
+                <Text style={[styles.accountEmail, { color: colors.mutedForeground }]}>{user.email}</Text>
+              )}
+              <View style={[styles.signedInBadge, { backgroundColor: colors.warningGreen + "20" }]}>
+                <View style={[styles.signedInDot, { backgroundColor: colors.warningGreen }]} />
+                <Text style={[styles.signedInText, { color: colors.warningGreen }]}>Signed in</Text>
+              </View>
+            </View>
+            <TouchableOpacity
+              style={[styles.authBtn, { borderColor: colors.border }]}
+              onPress={logout}
+            >
+              <Feather name="log-out" size={16} color={colors.mutedForeground} />
+              <Text style={[styles.authBtnText, { color: colors.mutedForeground }]}>Log out</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={styles.accountInner}>
+            <View style={[styles.avatarPlaceholder, { backgroundColor: colors.muted }]}>
+              <Feather name="user" size={24} color={colors.mutedForeground} />
+            </View>
+            <View style={styles.accountInfo}>
+              <Text style={[styles.accountName, { color: colors.foreground }]}>Not signed in</Text>
+              <Text style={[styles.accountEmail, { color: colors.mutedForeground }]}>
+                Sign in to sync your profile across devices
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={[styles.authBtn, { backgroundColor: colors.primary }]}
+              onPress={login}
+            >
+              <Text style={[styles.authBtnText, { color: "#fff" }]}>Log in</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
 
       {/* Diet Type */}
       <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Diet Type</Text>
@@ -279,4 +335,72 @@ const styles = StyleSheet.create({
     marginTop: 24,
   },
   bigSaveBtnText: { fontFamily: "Inter_600SemiBold", fontSize: 17, color: "#fff" },
+  accountCard: {
+    borderRadius: 14,
+    borderWidth: 1,
+    padding: 16,
+    marginBottom: 8,
+  },
+  accountInner: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  avatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+  },
+  avatarPlaceholder: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  accountInfo: {
+    flex: 1,
+    gap: 2,
+  },
+  accountName: {
+    fontFamily: "Inter_600SemiBold",
+    fontSize: 15,
+  },
+  accountEmail: {
+    fontFamily: "Inter_400Regular",
+    fontSize: 12,
+    lineHeight: 17,
+  },
+  signedInBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    alignSelf: "flex-start",
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 10,
+    marginTop: 4,
+  },
+  signedInDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  signedInText: {
+    fontFamily: "Inter_500Medium",
+    fontSize: 11,
+  },
+  authBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    paddingHorizontal: 14,
+    paddingVertical: 9,
+    borderRadius: 10,
+    borderWidth: 1,
+  },
+  authBtnText: {
+    fontFamily: "Inter_600SemiBold",
+    fontSize: 13,
+  },
 });
