@@ -1,0 +1,20 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "AxQlOeutMdhdUX39SKpQ7"
+uri = "file://artifacts/nutriscan/assets/images/icon.png"
+type = "image"
+title = "nutriscan app icon"
+
+[[generated]]
+id = "afwLulgOLnER8GMdXFJjB"
+uri = "file://artifacts/nutriscan/assets/images/food-hero.png"
+type = "image"
+title = "indian packaged food hero"
+
+[[generated]]
+id = "I-zhxUvRxClIi7CzYLBJN"
+uri = "file://artifacts/nutriscan/assets/images/scanner-bg.png"
+type = "image"
+title = "scanner background"
