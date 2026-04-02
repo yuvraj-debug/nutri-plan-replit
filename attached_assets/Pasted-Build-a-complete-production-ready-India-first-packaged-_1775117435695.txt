@@ -1,0 +1,1007 @@
+Build a complete production-ready India-first packaged food intelligence app called NutriScan AI.
+
+The app helps users scan packaged food products, identify them through barcode first, use OCR only as fallback, analyze nutrition and ingredients, rate the product out of 10, personalize warnings based on the user’s health profile, store history, support manual product creation, and allow the owner/admin to manage the entire product catalog through a separate admin panel.
+
+This is not a chat app.
+Do not build a standalone AI assistant or chat screen.
+AI is only allowed as a structured explanation layer inside product analysis, ingredient summaries, verdict generation, and personalization wording.
+
+The app must feel fast, trustworthy, practical, and useful for Indian users.
+It must be cheap to run, easy to maintain, and built in a way that lets the owner manually add or correct products when public APIs do not have them.
+
+PRIMARY GOAL
+A user should be able to:
+1. open the app,
+2. scan a barcode or search a product,
+3. instantly understand what the product is,
+4. see a health score out of 10,
+5. see why the score is what it is,
+6. see whether the product fits their health profile,
+7. save it to history or pantry,
+8. and continue even if the public barcode API has no record.
+
+INDIA-FIRST PRODUCT DIRECTION
+- Build for India first.
+- Use Indian food habits, Indian packaged food brands, Indian labels, Indian serving sizes, Indian price sensitivity, and Indian internet conditions.
+- Support English and Hindi at minimum.
+- Use INR pricing in the monetization UI.
+- Make the app work on low-end Android phones.
+- Keep the app usable on weak or unstable internet.
+- Cache repeated results aggressively.
+- Support vegetarian, vegan, Jain-friendly, halal-aware, allergen-aware, low-sugar, and low-sodium use cases.
+- Prefer plain language over technical jargon in user-facing text.
+- Show Indian product examples in discover, onboarding, empty states, and search suggestions.
+
+NO STANDALONE AI CHAT
+- Do not create any screen, feature, or menu item called AI Chat, Ask AI, Chat Assistant, or similar.
+- Do not provide free-form conversational chat.
+- Do not create a multi-turn chat experience.
+- Replace chat with structured “Why this score?”, “Ingredient explanation”, “What to watch for”, and “Suitability for you” sections on the result screen.
+
+APP STRUCTURE
+Build these major areas:
+1. Onboarding
+2. Sign in / sign up
+3. Home dashboard
+4. Scan product
+5. Search / Discover products
+6. Product result screen
+7. Nutrition deep dive
+8. Ingredient explorer
+9. Compare products
+10. History
+11. Favorites / Pantry
+12. Health profile
+13. Settings
+14. Admin panel
+
+CORE PRODUCT EXPERIENCE
+The app must support three major ways to find a product:
+1. barcode scan,
+2. manual search / discover,
+3. manual barcode entry or reference code entry.
+
+Every successful product lookup should open the same unified product result page, whether the product came from a scan, search, discover, manual add, or admin-created record.
+
+SCANNER SCREEN REQUIREMENTS
+The scan screen must look and behave like a fast consumer scanner.
+
+Visual structure:
+- Top bar with back button and title “Scan Product”.
+- Segmented tabs at top or near top:
+  - Barcode
+  - Search
+  - Reference
+- Central camera preview area with a clear scan frame.
+- Helper text in the scan frame area, such as “Point at a barcode”.
+- Below the scanner, show a quick-access list of famous Indian packaged products for simulation, testing, and easy browsing.
+- Bottom button: “Enter barcode manually”.
+
+Behavior:
+- Barcode mode is the default mode.
+- Camera opens instantly when the screen loads.
+- The scan frame must guide the user clearly.
+- Show focus help, blur warnings, move closer hints, and torch toggle.
+- If a barcode is detected, resolve it immediately.
+- If barcode detection fails, do not dead-end the user.
+- Offer manual barcode entry, reference code entry, product search, and OCR fallback.
+
+MANUAL BARCODE ENTRY
+Add a bottom button or modal that opens a barcode input flow.
+
+Manual barcode flow:
+- User taps “Enter barcode manually”.
+- Show numeric input.
+- User enters barcode, EAN, UPC, GTIN, SKU, or product code.
+- On submit:
+  - first check local database,
+  - then backend database,
+  - then public API cache,
+  - then admin-created records.
+- If found, open the product result screen.
+- If not found, show:
+  - Product not found
+  - Add product manually
+  - Submit product for review
+
+REFERENCE CODE ENTRY
+Add a separate working reference-code flow.
+This is not cosmetic.
+It must actually work.
+
+Reference code may include:
+- barcode number
+- EAN
+- UPC
+- GTIN
+- SKU
+- internal reference code
+- admin product code
+- brand code
+
+The app should search the product database by reference code exactly and also allow partial fallback if the user only remembers part of the code.
+
+DISCOVER TAB REQUIREMENTS
+Add a Discover tab where users can browse famous Indian packaged food products without scanning.
+
+Discover goals:
+- reduce friction,
+- allow search instead of scan,
+- make the app useful even when the user is just browsing,
+- show trusted and familiar items,
+- increase conversion into scan and save actions.
+
+Discover must include:
+- a search bar at the top,
+- featured popular Indian packaged foods,
+- category filters,
+- product images,
+- product cards,
+- sorting by popularity or relevance,
+- instant open into the product result page.
+
+Search bar requirements:
+- Search by product name
+- Search by brand
+- Search by barcode
+- Search by reference code
+- Search should be fast and debounced
+- Search should search local DB first
+- then cached records
+- then backend search index
+
+Featured Indian products should include common packaged foods such as:
+- Maggi
+- Parle-G
+- Amul milk products
+- Lays
+- Britannia products
+- Haldiram products
+- Red Bull
+- common biscuits
+- instant noodles
+- dairy drinks
+- packaged snacks
+- protein snacks
+- cereal products
+- beverages
+
+Discover cards must show:
+- product image
+- product name
+- brand
+- category
+- score badge if known
+- small trust indicator if admin verified
+- quick-save action if needed
+
+Click behavior:
+- tapping a product must open the exact same product result page used by scans.
+
+Discover categories:
+- Snacks
+- Beverages
+- Dairy
+- Biscuits
+- Instant Food
+- Protein Foods
+- Healthy Picks
+- Trending India
+- Vegetarian Friendly
+- Low Sugar
+- Low Sodium
+
+DISCOVER IMAGE REQUIREMENT
+Product cards in Discover must show product images.
+If a product has no image:
+- use a fallback placeholder image,
+- allow admin to upload or set one later,
+- do not break the layout.
+
+HOME DASHBOARD REQUIREMENTS
+Home dashboard should provide:
+- greeting
+- scan shortcut
+- recent scans
+- recent favorite products
+- quick search
+- quick access to Discover
+- health tips
+- daily summary
+- one-tap path back to scanning
+
+Home should feel practical, not crowded.
+Use a clean layout with a strong primary action.
+
+PRODUCT RESULT SCREEN REQUIREMENTS
+This is the key screen.
+It must be clear, useful, and trustworthy.
+
+Show:
+- product image
+- product name
+- brand
+- category
+- serving size
+- barcode or reference code
+- health score out of 10
+- score band color
+- confidence badge
+- concise verdict
+- suitability for the current health profile
+- allergen alerts
+- ingredient summary
+- nutrition summary
+- “why this score” section
+- “what lowered the score” section
+- “what improved the score” section
+- save to history
+- save to pantry
+- compare
+- share
+- view deep dive
+- view ingredients
+
+The verdict should be simple and practical:
+- Good
+- Okay in moderation
+- Avoid
+- Use caution
+
+Do not make the result screen read like a medical report.
+Do not make it sound like random AI text.
+It must feel structured and explainable.
+
+NUTRITION DEEP DIVE
+Add a deep dive page that shows:
+- macro breakdown
+- micronutrient breakdown where available
+- per 100g / 100ml view
+- per serving view
+- whole pack view
+- daily value comparison
+- category-specific notes
+- chart or bar visuals if they add clarity
+
+Critical rule:
+Always show which basis is being used:
+- per 100g
+- per serving
+- per full pack
+
+This is important because serving sizes in Indian packaged food are often misleading unless the user sees multiple views.
+
+INGREDIENT EXPLORER
+Add a page that lists ingredients individually.
+
+Each ingredient should show:
+- ingredient name
+- function
+- additive category if applicable
+- risk label
+- plain-English explanation
+- whether it is common or not
+- whether it is synthetic or natural where known
+- suitability note for the current user
+
+Risk labels:
+- safe
+- caution
+- avoid
+
+Do not use fear-based or sensational text.
+Do not make claims without a basis.
+Keep explanations understandable to normal users.
+
+PERSONALIZED HEALTH PROFILE
+Create a health profile screen where the user can configure health preferences.
+
+Allergies:
+- Peanuts
+- Tree Nuts
+- Milk / Dairy
+- Eggs
+- Wheat / Gluten
+- Soy
+- Fish
+- Shellfish
+- Sesame
+
+Diet Type:
+- No restriction
+- Vegetarian
+- Vegan
+
+Health Conditions:
+- Diabetes
+- Hypertension
+- Heart Disease
+- Celiac Disease
+- Lactose Intolerance
+- Kidney Disease
+
+Preferences:
+- Prefer low sugar
+- Avoid additives & preservatives
+- Prefer low sodium
+
+Health profile logic:
+- Allergies must create strong red warnings.
+- Diet type must influence suitability labels.
+- Health conditions must modify score relevance and warnings.
+- Preferences must softly bias the score and the explanation.
+- The result screen must say whether the product is suitable for the user’s specific profile.
+
+Example behavior:
+- Diabetes profile: sugar penalties become stronger.
+- Hypertension profile: sodium penalties become stronger.
+- Celiac profile: gluten and cross-contact warnings become stronger.
+- Vegan profile: animal-derived ingredients must be flagged clearly.
+- Dairy allergy / lactose intolerance: dairy ingredients must be flagged appropriately.
+- Kidney disease profile: sodium and selected minerals may matter more.
+
+HISTORY REQUIREMENTS
+Add a history system that stores every scan and lookup.
+
+Store:
+- timestamp
+- product image
+- product name
+- barcode or reference code
+- score
+- confidence
+- nutrition summary
+- ingredient warnings
+- source of result
+- whether OCR was used
+- whether the product came from API, manual entry, discover, or admin database
+
+History views:
+- daily
+- weekly
+- monthly
+- searchable
+- filterable by score, category, confidence, and warning type
+
+History actions:
+- open past result
+- favorite
+- add to pantry
+- compare
+- export CSV
+- share
+- delete
+
+PANTRY / FAVORITES
+Add a saved products area.
+This should allow the user to:
+- save frequently scanned items,
+- quickly reopen them,
+- compare them,
+- re-log them,
+- and reuse them without rescanning.
+
+COMPARE PRODUCTS
+Add product comparison for 2 or 3 products.
+
+Compare:
+- score
+- calories
+- sugar
+- sodium
+- fats
+- fiber
+- protein
+- ingredients
+- additives
+- allergen risk
+- suitability
+- confidence
+- category-specific values
+
+The comparison should visually highlight which product is better in each row.
+
+SEARCH SYSTEM
+The app must support a proper search system.
+
+Search should allow:
+- product name
+- brand
+- barcode
+- reference code
+- category
+- featured products
+- trending products
+- Indian products
+
+Search ranking logic:
+1. exact barcode/reference match
+2. exact product name
+3. exact brand
+4. partial match
+5. featured/trending boost
+6. verified/admin-validated boost
+
+SCORING SYSTEM: HEALTH SCORE OUT OF 10
+The score must be transparent, explainable, and category aware.
+
+The health score is a consumer guidance score, not a medical diagnosis.
+It should tell the user if the product is generally better or worse relative to alternatives.
+
+Use these scoring components:
+- calories / energy density
+- added sugar
+- sodium
+- saturated fat
+- trans fat
+- fiber
+- protein quality
+- ingredient quality
+- additive risk
+- processing level
+- completeness of data
+- personalization adjustment
+- category-specific weighting
+
+General formula:
+finalScore = clamp(0, 10, baseNutritionScore + ingredientQualityScore + additiveScore + personalizationAdjustment - missingDataPenalty - ultraProcessedPenalty)
+
+The result must always be rounded to one decimal place.
+
+SCORING PRINCIPLES
+- High sugar lowers the score heavily.
+- Sodium lowers the score heavily in snacks, noodles, condiments, and drinks.
+- Trans fat should be penalized aggressively.
+- Saturated fat should be penalized moderately.
+- Fiber should improve the score.
+- Protein should improve the score, but must not hide poor ingredients.
+- Very long ingredient lists or very artificial ingredient profiles should lower the score.
+- Additives should be classified clearly.
+- If the product data is incomplete, confidence should fall.
+- If OCR data is uncertain, confidence must be shown as low or medium.
+- The score should adapt to the product category.
+
+CATEGORY-AWARE SCORING
+Create separate weight profiles for:
+- beverages
+- biscuits
+- chips and namkeen
+- instant noodles
+- dairy products
+- protein foods
+- cereals
+- sweets
+- condiments
+- bakery products
+- frozen snacks
+- nutrition drinks
+
+Examples:
+- beverages: sugar matters more
+- instant noodles: sodium and additives matter more
+- protein snacks: protein matters more, but sugar and additives still matter
+- condiments: sodium matters more per serving
+- dairy: sugar, protein, and fat balance matter together
+
+SCORE EXPLANATION REQUIREMENT
+Every score should have:
+- top positive reasons
+- top negative reasons
+- plain-English verdict
+- suitability note for the current user profile
+- confidence note
+
+Use structured explanation text, not free-form chat.
+
+CONFIDENCE SYSTEM
+Add a separate confidence indicator.
+Confidence should be based on:
+- barcode match certainty
+- product database match quality
+- OCR clarity
+- completeness of the nutrition panel
+- completeness of the ingredient list
+- whether the record is admin-verified
+- whether the data came from a user submission
+- whether the image was clear
+
+Confidence labels:
+- High
+- Medium
+- Low
+
+If confidence is low:
+- show a warning
+- allow retry
+- allow manual correction
+- allow product submission
+- do not overstate certainty
+
+OCR / FALLBACK RULES
+OCR is fallback only.
+Use OCR if:
+- barcode is missing,
+- barcode scan fails,
+- public API has no match,
+- the product may still be readable from the package label.
+
+If OCR fails:
+- ask the user to retake the photo,
+- use manual search,
+- or use manual barcode/reference entry.
+
+PRODUCT DATABASE
+The app should use a real backend product database with these key fields:
+- product name
+- brand
+- barcode
+- reference code
+- category
+- package size
+- serving size
+- nutrition per 100g
+- nutrition per serving
+- ingredients
+- additives
+- allergen info
+- image URL
+- country
+- language variants
+- source
+- status
+- featured flag
+- trending flag
+- search keywords
+- confidence metadata
+- moderation metadata
+- created_at
+- updated_at
+
+DATA SOURCES
+The app should resolve products in this order:
+1. local app cache
+2. backend database
+3. admin-created records
+4. featured/discover records
+5. public food API such as Open Food Facts
+6. OCR-derived temporary record
+7. manual user input
+8. missing product submission queue
+
+MANUAL PRODUCT REGISTRATION
+If a product does not exist in the external API, the admin or owner must be able to manually add it.
+
+Manual product creation must allow:
+- barcode
+- reference code
+- product name
+- brand
+- category
+- ingredients
+- nutrition values
+- allergens
+- additives
+- tags like vegetarian, vegan, jain, halal
+- product image
+- featured flag
+- trending flag
+- search keywords
+- publish status
+
+Manual add flow:
+- create draft
+- review
+- publish
+- future scan/search should resolve to this record
+
+Allow bulk import from CSV as well.
+
+ADMIN PANEL REQUIREMENTS
+The admin panel must be a separate web app, not inside the mobile app.
+The admin panel is for the owner to manage products, users, scoring rules, model settings, and imports.
+
+Admin access model:
+- Admin panel URL should be separate from the mobile app.
+- Example: admin.yourapp.com
+- Only admin users can open it.
+- Admin authentication must be protected with role-based access.
+- Never rely only on frontend hiding.
+- Backend must verify admin role on every admin request.
+
+Admin authentication options:
+- email login with role check
+- Supabase/Firebase auth with admin role
+- allow a fallback allowlist of admin emails in env for MVP
+
+Admin panel must not be publicly accessible without login.
+If a regular user tries to access admin routes, deny access.
+
+ADMIN PANEL PAGES
+Build these admin pages:
+
+1. Dashboard
+- total users
+- total scans
+- total products
+- low-confidence scans
+- failed OCR scans
+- missing products queue
+- recent additions
+- top searched products
+- recently published records
+
+2. Product management
+- add product
+- edit product
+- delete product
+- merge duplicates
+- update nutrition
+- update ingredients
+- update additives
+- update allergens
+- update category
+- update image
+- set featured
+- set trending
+- set source
+- set confidence
+- publish or unpublish
+
+3. Missing product moderation
+- review user-submitted missing products
+- approve
+- reject
+- edit and publish
+- merge with existing record
+- add internal notes
+
+4. Search / discover curation
+- choose featured products
+- choose trending products
+- define category collections
+- set which products appear in discover
+- upload product images
+- control ordering and prioritization
+
+5. Manual product creation
+- create product from scratch
+- fill barcode, name, brand, ingredients, nutrition, image, tags
+- save as draft or publish immediately if verified
+
+6. Score rules
+- edit category weights
+- edit sugar penalty
+- edit sodium penalty
+- edit additive classification
+- edit allergen severity
+- edit health condition modifiers
+- edit confidence calculation rules
+
+7. Ingredient / additive library
+- manage ingredient glossary
+- manage additive risk classes
+- manage function labels
+- manage synonyms
+- manage translations
+
+8. User management
+- view users
+- view profiles
+- view scan summaries
+- view saved items
+- disable abusive accounts if needed
+
+9. Model configuration
+- set primary LLM
+- set fallback LLM
+- set prompts
+- set response schema
+- inspect failures
+- view model latency
+- view usage counts
+
+10. Feature flags
+- toggle OCR
+- toggle discover
+- toggle comparison
+- toggle export
+- toggle locale support
+- toggle featured collections
+- toggle user submissions
+
+11. Import / export
+- CSV import
+- CSV export
+- bulk barcode import
+- bulk product import
+- audit logs
+
+12. Logs / analytics
+- scan success rate
+- barcode success rate
+- OCR fallback rate
+- cache hit rate
+- model failure rate
+- API usage
+- product search latency
+- top missing barcode reports
+
+ADMIN PANEL ACCESS LOGIC
+Admin access must work like this:
+1. user logs in
+2. backend checks auth token
+3. backend checks role
+4. if role is admin, allow access
+5. if role is not admin, deny access
+6. all admin API routes must re-check role server-side
+
+Add support for:
+- ADMIN_EMAILS in env for quick MVP allowlist
+- admin role in database for production
+- secure session handling
+- logout
+- inactivity timeout
+
+ENV FILE REQUIREMENTS
+Everything sensitive or runtime-specific must come from environment variables or server configuration.
+Do not hardcode secrets.
+
+Use env variables like:
+- EXPO_PUBLIC_API_BASE_URL
+- DATABASE_URL
+- JWT_SECRET
+- FIREBASE_API_KEY
+- FIREBASE_AUTH_DOMAIN
+- FIREBASE_PROJECT_ID
+- FIREBASE_STORAGE_BUCKET
+- FIREBASE_MESSAGING_SENDER_ID
+- FIREBASE_APP_ID
+- OPENFOODFACTS_BASE_URL
+- BARCODE_SCANNER_PROVIDER
+- OCR_PROVIDER
+- PRIMARY_LLM_BASE_URL
+- PRIMARY_LLM_API_KEY
+- PRIMARY_LLM_MODEL
+- FALLBACK_LLM_BASE_URL
+- FALLBACK_LLM_API_KEY
+- FALLBACK_LLM_MODEL
+- LLM_TEMPERATURE
+- LLM_TOP_P
+- LLM_MAX_TOKENS
+- REDIS_URL
+- SENTRY_DSN
+- ADMIN_EMAILS
+- FEATURE_FLAGS_JSON
+- APP_ENV
+
+Do not hardcode:
+- API keys
+- secret tokens
+- model URLs if they might change
+- admin email allowlists
+- database credentials
+- product lookup URLs if configurable
+
+LLM BACKEND REQUIREMENTS
+Use a server-side OpenAI-compatible client only.
+Do not expose the AI provider key in the app.
+
+Primary model:
+- use the configured primary OpenAI-compatible model from env
+
+Fallback model:
+- use a second configured model from env
+- if primary fails, retry once
+- then switch to fallback model
+- if fallback fails, use a deterministic rule-based explanation from the scoring engine
+
+The AI output must be structured JSON.
+
+AI OUTPUT JSON SHOULD INCLUDE:
+- summary
+- positives
+- negatives
+- warnings
+- ingredient_explanations
+- suitability
+- confidence_notes
+- disclaimer
+- recommended_action
+
+Validate the JSON on the server.
+If invalid, regenerate or use rule-based fallback.
+Do not allow the frontend to receive broken model output.
+
+MOBILE TECH STACK
+Use:
+- React Native + Expo
+- React Navigation
+- Zustand
+- React Query
+- a clean component library
+- cached images
+- responsive mobile layouts
+
+BACKEND TECH STACK
+Use:
+- Node.js
+- Express or NestJS
+- PostgreSQL
+- optional Redis
+- JWT authentication
+- REST API or clear GraphQL only if needed
+- structured logging
+- product ingestion and moderation APIs
+
+AUTH
+Support:
+- email login
+- Google login
+- Apple login if needed
+- optional phone login later if required
+
+SECURITY
+- JWT auth with refresh tokens
+- role-based admin access
+- encrypted scan history
+- secure product upload handling
+- server-side scoring
+- user data export
+- delete account
+- no raw camera frame storage unless user explicitly submits a product
+- rate limit public endpoints
+- protect admin endpoints separately
+
+LOW-COST OPERATING STRATEGY
+- barcode scan first
+- OCR only when necessary
+- cache repeat lookups
+- use public APIs sparingly
+- use admin database as source of truth for missing products
+- keep AI responses short and structured
+- avoid heavy network calls on every screen
+- store and reuse product metadata
+- cache product images
+- keep backend stateless where practical
+- keep logs minimal
+
+UI / UX STYLE
+- clean
+- fast
+- premium but not cluttered
+- one major action per screen
+- clear color coding
+- readable typography
+- strong empty states
+- practical Indian product discovery
+- friendly but not childish
+- no fake complexity
+- no dead buttons
+- no placeholders that never work
+
+ONBOARDING
+Keep onboarding short.
+Ask only for:
+- language
+- diet type
+- allergies
+- health conditions
+- preferences
+- camera permission
+- optional notifications
+
+Onboarding should be skippable.
+The user should reach scanning quickly.
+
+NOTIFICATIONS
+Use notifications only if helpful:
+- weekly summary
+- reminders to scan
+- pantry reminders
+- weekly product trends
+Do not spam users.
+
+MONETIZATION
+Use a freemium model that makes sense in India.
+Do not overpaywall the basic usefulness of the app.
+
+Free tier:
+- barcode scans
+- basic score
+- basic nutrition summary
+- allergen warnings
+- limited OCR fallback
+- limited history
+- limited comparison
+- discover browsing
+- light ads if necessary
+
+Paid tier:
+- unlimited history
+- advanced ingredient detail
+- stronger personalization
+- export
+- advanced compare
+- better reports
+- no ads
+- premium filters
+- deeper search analytics
+
+PRODUCT DISCOVERY STRATEGY
+The app should grow in three ways:
+1. scanning
+2. discover/search
+3. manual product registration
+
+This means the system must let the owner continuously expand the catalog manually when external APIs do not have the product.
+
+ERROR HANDLING
+Handle these cases gracefully:
+- barcode not found
+- API miss
+- OCR failure
+- low confidence
+- network unavailable
+- model timeout
+- invalid AI output
+- duplicate product
+- missing image
+- auth failure
+- permission denial
+- database lookup failure
+
+Every error should end with a helpful next step, not a dead end.
+
+LOGGING AND METRICS
+Track:
+- scan success rate
+- barcode hit rate
+- OCR usage rate
+- OCR failure rate
+- manual add rate
+- discover search rate
+- product view rate
+- history retention
+- product submission rate
+- admin publishing rate
+- model latency
+- cache hit rate
+- product lookup latency
+
+DELIVERABLES
+Generate:
+1. mobile app
+2. backend API
+3. admin panel web app
+4. database schema
+5. environment templates
+6. scoring engine
+7. OCR fallback pipeline
+8. product discovery/search flow
+9. manual product creation flow
+10. history and pantry flow
+11. health profile flow
+12. admin access and role security
+13. setup instructions
+14. deployment instructions
+
+FINAL PRODUCT QUALITY BAR
+The finished app should:
+- scan fast
+- search fast
+- show useful results
+- personalize warnings correctly
+- allow the owner to add products manually anytime
+- allow the owner to edit or correct any product
+- let the owner manage discover content
+- let the owner secure and access admin safely after launch
+- remain useful even when public APIs fail
+- never feel like a toy prototype
+
+Make every major feature real, connected, and operational.
+No dead buttons.
+No fake screens.
+No chat assistant.
+No broken admin access.
+No hidden hardcoded secrets.
+No dependency on external APIs for basic usability.

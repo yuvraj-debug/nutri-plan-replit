@@ -9,6 +9,7 @@ import { useColors } from "@/hooks/useColors";
 import { useApp } from "@/context/AppContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ScoreRing } from "@/components/ScoreRing";
+import { ProductAvatar } from "@/components/ProductAvatar";
 import { SAMPLE_PRODUCTS, DISCOVER_CATEGORIES } from "@/data/sampleProducts";
 
 export default function HomeScreen() {
