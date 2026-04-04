@@ -2,18 +2,13 @@ import { BlurView } from "expo-blur";
 import { Tabs, router } from "expo-router";
 import { Feather } from "@expo/vector-icons";
 import React, { useEffect } from "react";
-import { Platform, StyleSheet, View, useColorScheme } from "react-native";
+import {
+  Platform, StyleSheet, View, useColorScheme,
+  TouchableOpacity, Text,
+} from "react-native";
 
 import { useColors } from "@/hooks/useColors";
 import { useApp } from "@/context/AppContext";
-
-const TAB_SCREENS = [
-  { name: "index", title: "Home", icon: "home" },
-  { name: "history", title: "History", icon: "clock" },
-  { name: "pantry", title: "Pantry", icon: "heart" },
-  { name: "discover", title: "Discover", icon: "compass" },
-  { name: "profile", title: "Profile", icon: "user" },
-] as const;
 
 export default function TabLayout() {
   const { isOnboarded, isLoading } = useApp();
@@ -29,6 +24,8 @@ export default function TabLayout() {
     }
   }, [isLoading, isOnboarded]);
 
+  const tabBarHeight = isWeb ? 84 : 68;
+
   return (
     <Tabs
       screenOptions={{
@@ -41,8 +38,9 @@ export default function TabLayout() {
           borderTopWidth: 1,
           borderTopColor: colors.border,
           elevation: 0,
-          height: isWeb ? 84 : 64,
-          paddingBottom: isWeb ? 20 : 8,
+          height: tabBarHeight,
+          paddingBottom: isWeb ? 20 : 10,
+          paddingTop: 6,
         },
         tabBarBackground: () =>
           isIOS ? (
@@ -60,18 +58,99 @@ export default function TabLayout() {
         },
       }}
     >
-      {TAB_SCREENS.map((screen) => (
-        <Tabs.Screen
-          key={screen.name}
-          name={screen.name}
-          options={{
-            title: screen.title,
-            tabBarIcon: ({ color, size }) => (
-              <Feather name={screen.icon} size={size ?? 22} color={color} />
-            ),
-          }}
-        />
-      ))}
+      {/* Home */}
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: "Home",
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="home" size={size ?? 22} color={color} />
+          ),
+        }}
+      />
+
+      {/* Scan — custom big center button */}
+      <Tabs.Screen
+        name="scan"
+        options={{
+          title: "",
+          tabBarButton: () => (
+            <TouchableOpacity
+              style={styles.scanTabBtn}
+              onPress={() => router.push("/scanner")}
+              activeOpacity={0.85}
+            >
+              <View style={[styles.scanTabCircle, { backgroundColor: colors.primary }]}>
+                <Feather name="camera" size={26} color="#fff" />
+              </View>
+              <Text style={[styles.scanTabLabel, { color: colors.primary }]}>Scan</Text>
+            </TouchableOpacity>
+          ),
+        }}
+      />
+
+      {/* Discover */}
+      <Tabs.Screen
+        name="discover"
+        options={{
+          title: "Discover",
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="compass" size={size ?? 22} color={color} />
+          ),
+        }}
+      />
+
+      {/* Profile */}
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Profile",
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="user" size={size ?? 22} color={color} />
+          ),
+        }}
+      />
+
+      {/* Hidden screens — accessible via drawer */}
+      <Tabs.Screen
+        name="history"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="pantry"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  scanTabBtn: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "flex-start",
+    paddingTop: 0,
+    marginTop: -18,
+  },
+  scanTabCircle: {
+    width: 58,
+    height: 58,
+    borderRadius: 29,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#00897B",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  scanTabLabel: {
+    fontFamily: "Inter_600SemiBold",
+    fontSize: 11,
+    marginTop: 4,
+  },
+});
